@@ -7,6 +7,7 @@
 #define JNI_EXPERIMENT_OPENSHIFTAPI_H
 
 #include <string>
+#include "curl/curl.h"
 
 using namespace std;
 
@@ -15,6 +16,7 @@ class OpenshiftAPI {
         OpenshiftAPI();
         ~OpenshiftAPI();
         string getString();
+        string useCurl();
     private:
         string something;
 };

@@ -1,28 +1,31 @@
-apply plugin: "com.android.model.application"
+apply plugin: 'com.android.model.application'
+
+def curl_lib_path = file(project(':native-libs:curl').projectDir).absolutePath
 
 model {
-    android {
-        compileSdkVersion 23
-        buildToolsVersion "23.0.2"
-
-        defaultConfig {
-            applicationId "com.example.jniexperiment"
-            minSdkVersion.apiLevel 15
-            targetSdkVersion.apiLevel 22
-            versionCode 1
-            versionName "1.0"
-
-        }
-        buildTypes {
-            release {
-                minifyEnabled false
-                proguardFiles.add(file("proguard-rules.pro"))
+    repositories {
+        libs(PrebuiltLibraries) {
+            curl {
+                headers.srcDir "${curl_lib_path}/include"
+                binaries.withType(StaticLibraryBinary) {
+                    staticLibraryFile = file("${curl_lib_path}/${targetPlatform.getName()}/libcurl.a")
+                }
             }
         }
+    }
+    android {
+        compileSdkVersion = 23
+        buildToolsVersion = "23.0.2"
 
+        defaultConfig.with {
+            applicationId = "com.example.jniexperiment"
+            minSdkVersion.apiLevel = 4
+            targetSdkVersion.apiLevel = 23
+        }
         ndk {
-            moduleName "jni-experiment"
-            stl = "stlport_shared"
+            moduleName = "jni-experiment"
+            stl = "stlport_static"
+            ldLibs.addAll(["android","log","z"])
             /*
              * Other ndk flags configurable here are
              * cppFlags.add("-fno-rtti")
@@ -31,5 +34,55 @@ model {
              * stl       = "system"
              */
         }
+        buildTypes {
+            release {
+                minifyEnabled = false
+                proguardFiles.add(file('proguard-rules.txt'))
+            }
+        }
+        productFlavors {
+            // for detailed abiFilter descriptions, refer to "Supported ABIs" @
+            // https://developer.android.com/ndk/guides/abis.html#sa
+            create("arm") {
+                ndk.abiFilters.add("armeabi")
+            }
+            create("arm7") {
+                ndk.abiFilters.add("armeabi-v7a")
+            }
+            create("arm8") {
+                ndk.abiFilters.add("arm64-v8a")
+            }
+            create("x86") {
+                ndk.abiFilters.add("x86")
+            }
+            create("x86-64") {
+                ndk.abiFilters.add("x86_64")
+            }
+            create("mips") {
+                ndk.abiFilters.add("mips")
+            }
+            create("mips-64") {
+                ndk.abiFilters.add("mips64")
+            }
+            // To include all cpu architectures, leaves abiFilters empty
+            create("all")
+        }
+
+        sources {
+            main {
+                java {
+                    source {
+                        srcDir "src"
+                    }
+                }
+                jni {
+                    dependencies {
+                        library "curl" linkage "static"
+                    }
+                }
+            }
+        }
+
+
     }
 }
