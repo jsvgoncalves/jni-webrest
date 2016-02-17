@@ -1,6 +1,7 @@
 apply plugin: 'com.android.model.application'
 
 def curl_lib_path = file(project(':native-libs:curl').projectDir).absolutePath
+def rapidjson_lib_path = file(project(':native-libs:rapidjson').projectDir).absolutePath
 
 model {
     repositories {
@@ -10,6 +11,9 @@ model {
                 binaries.withType(StaticLibraryBinary) {
                     staticLibraryFile = file("${curl_lib_path}/${targetPlatform.getName()}/libcurl.a")
                 }
+            }
+            rapidjson {
+                headers.srcDir "${rapidjson_lib_path}/include"
             }
         }
     }
@@ -78,6 +82,7 @@ model {
                 jni {
                     dependencies {
                         library "curl" linkage "static"
+                        library "rapidjson" linkage "static"
                     }
                 }
             }

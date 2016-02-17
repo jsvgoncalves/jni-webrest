@@ -1,1 +1,1 @@
-include ':app', ':native-libs:curl'
+include ':app', ':native-libs:curl', ':native-libs:rapidjson'
