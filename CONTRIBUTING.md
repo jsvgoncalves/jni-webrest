@@ -65,7 +65,7 @@ Not all commit messages need to have an elaborated body, but every commit
 message should have a title and a body.
 
 You can read more about best practices for git collaboration below:
-- https://www.kernel.org/doc/Documentation/SubmittingPatches
+- https://www.kernel.org/doc/html/latest/process/submitting-patches.html
 - http://chris.beams.io/posts/git-commit/
 
 You can also use a template for your git commits, see:
